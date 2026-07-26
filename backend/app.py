@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import json,requests
+import uuid
 import base64
 
 from langchain.chat_models import init_chat_model
@@ -36,8 +37,8 @@ agent=create_agent(
     model=model,
     tools=[],
     checkpointer=checkpointer)
-appl = FastAPI()
-appl.add_middleware(
+app = FastAPI()
+app.add_middleware(
     CORSMiddleware,
     expose_headers=["X-Question-Number","X-Interview-Complete"],
     allow_origins=["http://localhost:5500",
@@ -53,7 +54,7 @@ class InterviewRequest(BaseModel):
 
 current_subject = ""
 question_count=0
-thread_id="interview_session1"
+thread_id=str(uuid.uuid4())
 
 INTERVIEW_PROMPT = """You are Natalie, a friendly and conversational interviewer conducting a natural {current_subject} interview.
 
@@ -98,7 +99,7 @@ FEEDBACK_PROMPT = """Based on our complete interview conversation, provide detai
 
 
 
-@appl.post("/start-interview")
+@app.post("/start-interview")
 def start_interview(question: InterviewRequest):
     
     global current_subject,thread_id,question_count,checkpointer,agent
@@ -128,7 +129,7 @@ def start_interview(question: InterviewRequest):
     stream_resp=stream_audio(question)
     return StreamingResponse(stream_resp, headers={"X-Question-Number": str(question_count),"Content-Type":"text/plain"})
 
-@appl.post("/submit-answer")
+@app.post("/submit-answer")
 async def submit_answer(audio: UploadFile = File(...)):
     global question_count
     question_count+=1
@@ -177,7 +178,7 @@ async def submit_answer(audio: UploadFile = File(...)):
     return StreamingResponse(stream_resp, headers={"X-Question-Number": str(question_count),"Content-Type":"text/plain"})
 
 
-@appl.get("/get-feedback")
+@app.get("/get-feedback")
 def get_feedback():
     config={
         "configurable":{
