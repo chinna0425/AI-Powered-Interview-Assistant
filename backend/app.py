@@ -42,7 +42,7 @@ app.add_middleware(
     CORSMiddleware,
     expose_headers=["X-Question-Number","X-Interview-Complete"],
     allow_origins=["http://localhost:5500",
-        "https://YOUR-VERCEL-DOMAIN.vercel.app"],
+        "https://ai-powered-interview-assistant-sigma.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
