@@ -32,8 +32,8 @@ const feedbackText = document.getElementById("feedbackText");
 const improvementText = document.getElementById("improvementText");
 const newInterviewBtn = document.getElementById("newInterviewBtn");
 
-console.log(navigator);
-console.log(navigator.mediaDevices);
+const API_BASE_URL =
+    "https://ai-powered-interview-assistant-8mlh.onrender.com";
 
 // Subject Icons Map
 const iconMap = {
@@ -291,7 +291,7 @@ function stopRecording() {
 
 // ========== API FUNCTIONS ==========
 
-const startInterviewApiUrl = "http://127.0.0.1:8000/start-interview";
+const startInterviewApiUrl = `${API_BASE_URL}/start-interview`;
 async function startInterview() {
 	startInterviewBtn.classList.add("hidden");
 	recordBtn.classList.remove("hidden");
@@ -324,7 +324,7 @@ async function startInterview() {
 	}
 }
 
-const submitAnswerApiUrl = "http://127.0.0.1:8000/submit-answer";
+const submitAnswerApiUrl = `${API_BASE_URL}/submit-answer`;
 
 async function submitAnswer() {
 	if (!recordedBlob) return;
@@ -394,7 +394,7 @@ async function endInterview() {
 	await getFeedback();
 }
 
-const getFeedbackApiUrl = "http://127.0.0.1:8000/get-feedback";
+const getFeedbackApiUrl = `${API_BASE_URL}/get-feedback`;
 
 async function getFeedback() {
 	showFeedbackSection();
